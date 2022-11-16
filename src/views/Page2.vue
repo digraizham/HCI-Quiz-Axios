@@ -135,12 +135,17 @@
         </ion-card>
       </div>
     </ion-content>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" style="margin-right: 15px;">
+      <ion-fab-button href="/registrationpage"><span style="font-size: 60px; font-weight:bolder">+</span></ion-fab-button>
+    </ion-fab>
   </ion-page>
 </template>
 
 <script lang="ts">
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon } from "@ionic/vue";
-import { defineComponent } from "vue";
+import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonFab, IonFabButton, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/vue";
+import { defineComponent, onMounted, ref } from "vue";
+import axios from 'axios';
+import { add } from "ionicons/icons";
 
 export default defineComponent({
   name: "PageSecond",
@@ -151,6 +156,32 @@ export default defineComponent({
     IonTitle,
     IonToolbar,
   },
+  methods: {
+    date(date: string) {
+      const d = new Date(date);
+      const month = d.getMonth() + 1;
+      const day = d.getDate();
+      const year = d.getFullYear();
+      return `${day}-${month}-${year}`;
+    },
+    findDay(date: string) {
+      const d = new Date(date);
+      const diff = new Date().getTime() - d.getTime();
+      return Math.floor(diff / (1000 * 60 * 60 * 24));
+    },
+  },
+  setup() {
+    const ponds = ref();
+    let day;
+    onMounted(async () => {
+      const response = await axios.get('http://jft.web.id/fishapi/api/ponds')
+      ponds.value = response.data
+      console.log(response.data)
+    });
+    return {
+      add, ponds
+    }
+  }
 });
 </script>
 
